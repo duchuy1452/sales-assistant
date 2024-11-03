@@ -14,4 +14,13 @@ GEMINI_MODEL = "gemini-2.0-flash-exp"
 
 # App Configuration
 APP_TITLE = "AI Assistant"
-PAGE_TITLE = "AI Assistant" 
+PAGE_TITLE = "AI Assistant"
+
+# Predefined Questions
+PREDEFINED_QUESTIONS = [
+    "What is artificial intelligence?",
+    "How does machine learning work?",
+    "What are the benefits of AI?",
+    "What is the future of AI?",
+    "How can AI help businesses?",
+] 

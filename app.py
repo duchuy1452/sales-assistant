@@ -3,7 +3,7 @@ AI Assistant - Streamlit App
 """
 
 import streamlit as st
-from config import APP_TITLE, PAGE_TITLE
+from config import APP_TITLE, PAGE_TITLE, PREDEFINED_QUESTIONS
 from utils.chat_handler import ChatHandler
 
 def main():
@@ -22,6 +22,19 @@ def main():
     
     # Initialize chat handler
     chat_handler = ChatHandler()
+    
+    # Predefined questions
+    if not st.session_state.messages:
+        st.subheader("Try these questions:")
+        cols = st.columns(2)
+        for i, question in enumerate(PREDEFINED_QUESTIONS):
+            col = cols[i % 2]
+            if col.button(question, key=f"q_{i}"):
+                st.session_state.messages.append({"role": "user", "content": question})
+                with st.spinner("Thinking..."):
+                    response = chat_handler.get_response(question)
+                    st.session_state.messages.append({"role": "assistant", "content": response})
+                st.rerun()
     
     # Display chat history
     for message in st.session_state.messages:
