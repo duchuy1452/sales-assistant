@@ -5,6 +5,7 @@ AI Assistant - Streamlit App
 import streamlit as st
 from config import APP_TITLE, PAGE_TITLE, PREDEFINED_QUESTIONS
 from utils.chat_handler import ChatHandler
+from utils.ui_components import render_sidebar, render_chat_input, render_welcome_message
 
 def main():
     """Main application function"""
@@ -14,7 +15,6 @@ def main():
     )
     
     st.title(APP_TITLE)
-    st.write("Welcome to AI Assistant!")
     
     # Initialize session state
     if "messages" not in st.session_state:
@@ -23,8 +23,14 @@ def main():
     # Initialize chat handler
     chat_handler = ChatHandler()
     
-    # Predefined questions
+    # Render sidebar
+    render_sidebar()
+    
+    # Welcome message
     if not st.session_state.messages:
+        render_welcome_message()
+        
+        # Predefined questions
         st.subheader("Try these questions:")
         cols = st.columns(2)
         for i, question in enumerate(PREDEFINED_QUESTIONS):
@@ -42,7 +48,7 @@ def main():
             st.markdown(message["content"])
     
     # Chat input
-    if prompt := st.chat_input("Ask me anything..."):
+    if prompt := render_chat_input():
         # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
