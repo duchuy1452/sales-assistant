@@ -3,7 +3,7 @@ AI Sales Strategy Assistant - Streamlit App
 """
 
 import streamlit as st
-from config import APP_TITLE, PAGE_TITLE, PREDEFINED_QUESTIONS
+from config import APP_TITLE, PAGE_TITLE
 from utils.chat_handler import ChatHandler
 from utils.ui_components import render_sidebar, render_chat_input, render_welcome_message, load_css
 
@@ -28,24 +28,20 @@ def main():
     try:
         chat_handler = ChatHandler()
         
-        # Render sidebar
-        render_sidebar()
+        # Render sidebar and get selected question
+        selected_question = render_sidebar()
         
-        # Welcome message
+        # Handle selected question from sidebar
+        if selected_question:
+            st.session_state.messages.append({"role": "user", "content": selected_question})
+            with st.spinner("Analyzing your sales strategy..."):
+                response = chat_handler.get_response(selected_question)
+                st.session_state.messages.append({"role": "assistant", "content": response})
+            st.rerun()
+        
+        # Welcome message for new users
         if not st.session_state.messages:
             render_welcome_message()
-            
-            # Sales strategy questions
-            st.subheader("Sales Strategy Questions:")
-            cols = st.columns(2)
-            for i, question in enumerate(PREDEFINED_QUESTIONS):
-                col = cols[i % 2]
-                if col.button(question, key=f"q_{i}"):
-                    st.session_state.messages.append({"role": "user", "content": question})
-                    with st.spinner("Analyzing your sales strategy..."):
-                        response = chat_handler.get_response(question)
-                        st.session_state.messages.append({"role": "assistant", "content": response})
-                    st.rerun()
         
         # Display chat history
         for message in st.session_state.messages:
